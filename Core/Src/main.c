@@ -19,6 +19,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "adc.h"
+#include "Temp_CTRL.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -52,6 +54,9 @@ osThreadId Ten_msHandle;
 uint32_t Ten_ms_Buffer[ 128 ];
 osStaticThreadDef_t Ten_ms_ControlBlock;
 /* USER CODE BEGIN PV */
+
+
+uint32_t Test_Register;
 
 /* USER CODE END PV */
 
@@ -105,7 +110,8 @@ int main(void)
   MX_USART2_UART_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_ADCEx_Calibration_Start(&hadc1);
+  ADC_Enable(&hadc1);
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -420,20 +426,19 @@ static void MX_GPIO_Init(void)
 /* USER CODE END Header_Start_Hundred_ms */
 void Start_Hundred_ms(void const * argument)
 {
-	TickType_t pxPreviousWakeTime = xTaskGetTickCount();
   /* USER CODE BEGIN 5 */
+	TickType_t pxPreviousWakeTime = xTaskGetTickCount();
   /* Infinite loop */
   for(;;)
   {
 	  /*---------------------------Call function-----------------------------*/
-	  /*empty*/
 
+
+	  vTaskDelay(1);
 
 	  /*----------------------Wait till the end of 100ms---------------------*/
+	 vTaskDelayUntil(&pxPreviousWakeTime, 100);
 
-
-	 // vTaskDelayUntil(pxPreviousWakeTime, 5);
-	  osDelay(5);
   }
   /* USER CODE END 5 */
 }
@@ -447,8 +452,8 @@ void Start_Hundred_ms(void const * argument)
 /* USER CODE END Header_Start_Ten_ms */
 void Start_Ten_ms(void const * argument)
 {
-	TickType_t pxPreviousWakeTime = xTaskGetTickCount();
   /* USER CODE BEGIN Start_Ten_ms */
+	TickType_t pxPreviousWakeTime = xTaskGetTickCount();
   /* Infinite loop */
   for(;;)
   {
@@ -456,9 +461,12 @@ void Start_Ten_ms(void const * argument)
 
 	  ADC1_DMA1_Read(&hadc1);
 
+	  NTC_Value_Read();
+
+
 	/*------------------------Wait till the end of 10ms-----------------------*/
 
-	 vTaskDelayUntil(pxPreviousWakeTime, 10);
+	 vTaskDelayUntil(&pxPreviousWakeTime, 10);
 
   }
   /* USER CODE END Start_Ten_ms */
