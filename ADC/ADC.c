@@ -77,6 +77,20 @@ uint16_t ADC_Value_UVLO(void)
 	return UVLO;
 }
 
+/*-------------------FB1 request funktion-------------------------------------*/
+
+uint16_t ADC_Value_FB1(void)
+{
+	return FB1;
+}
+
+/*-------------------FB2 request funktion-------------------------------------*/
+
+uint16_t ADC_Value_FB2(void)
+{
+	return FB2;
+}
+
 /*-------------------NTC_CH1 request funktion-------------------------------------*/
 
 uint16_t ADC_Value_NTC_CH1(void)
@@ -105,27 +119,13 @@ uint16_t ADC_Value_NTC_CH4(void)
 	return NTC_CH4;
 }
 
-/*-------------------NTC_CH5 request funktion-------------------------------------*/
-
-uint16_t ADC_Value_NTC_CH5(void)
-{
-	return NTC_CH5;
-}
-
-/*-------------------NTC_CH6 request funktion-------------------------------------*/
-
-uint16_t ADC_Value_NTC_CH6(void)
-{
-	return NTC_CH6;
-}
-
 /*-------------------NTC_max value request funktion-------------------------------*/
 
 uint16_t ADC_Value_NTC_MAX(void)
 {
 	uint16_t Max_NTC_Value = 0;
 
-	for (int i = 2; i < READED_ADC_CHANNEL; i++)
+	for (int i = 4; i < READED_ADC_CHANNEL; i++)	/* 4 is the first NTC channel*/
 	{
 	if(Max_NTC_Value < adcBuffer[i])
 	{

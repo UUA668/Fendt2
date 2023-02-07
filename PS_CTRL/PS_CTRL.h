@@ -13,12 +13,13 @@
 
 /* Private macros-------------------------------------------------------------*/
 
-#define UVLOBufferSize 10
+#define VoltBufferSize 10
 
 /* Private function prototypes -----------------------------------------------*/
 
 extern void UVLO_Read(void);
-
+extern void FB1_Read(void);
+extern void FB2_Read(void);
 
 
 #endif /* PS_CTRL_H_ */
