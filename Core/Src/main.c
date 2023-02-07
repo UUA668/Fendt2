@@ -433,8 +433,9 @@ void Start_Hundred_ms(void const * argument)
   {
 	  /*---------------------------Call function-----------------------------*/
 
+	  NTC_Value_Read();
+	  NTC_Max_Read();
 
-	  vTaskDelay(1);
 
 	  /*----------------------Wait till the end of 100ms---------------------*/
 	 vTaskDelayUntil(&pxPreviousWakeTime, 100);
@@ -461,8 +462,7 @@ void Start_Ten_ms(void const * argument)
 
 	  ADC1_DMA1_Read(&hadc1);
 
-	  NTC_Value_Read();
-
+	  UVLO_Read();
 
 	/*------------------------Wait till the end of 10ms-----------------------*/
 

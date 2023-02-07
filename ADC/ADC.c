@@ -19,8 +19,6 @@ uint8_t adcConversationComplete = NO;			   	/*Complete flag set by callback*/
 uint8_t adcFirstUse = YES;
 
 
-
-
 /*Private functions ---------------------------------------------------------------*/
 
 /*--------------------Start ADC conversation with DMA-----------------------------*/
