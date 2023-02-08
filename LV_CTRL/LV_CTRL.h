@@ -8,6 +8,17 @@
 #ifndef LV_CTRL_H_
 #define LV_CTRL_H_
 
+/* Private includes ----------------------------------------------------------*/
+#include "stm32g0xx_hal.h"
+
+/* Private macros-------------------------------------------------------------*/
+
+#define FBBufferSize 5
+
+/* Private function prototypes -----------------------------------------------*/
+
+extern void FB1_Read(void);
+extern void FB2_Read(void);
 
 
 #endif /* LV_CTRL_H_ */

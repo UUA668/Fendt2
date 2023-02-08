@@ -37,7 +37,7 @@ typedef enum {
 typedef enum {
 	YES = 0,
 	NO,
-};
+}ADC_complete_t;
 
 /* Private function prototypes -----------------------------------------------*/
 extern ADC_status_t ADC1_DMA1_Read(ADC_HandleTypeDef *hadc);
@@ -53,6 +53,7 @@ extern uint16_t ADC_Value_NTC_CH4(void);
 extern uint16_t ADC_Value_NTC_MAX(void);
 
 extern void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc);
+extern ADC_complete_t ADC_ConvCpltCheck(ADC_HandleTypeDef *hadc);
 
 
 #endif /* ADC_H_ */

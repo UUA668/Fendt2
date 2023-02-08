@@ -16,7 +16,7 @@ uint16_t adcBuffer[READED_ADC_CHANNEL];				  /*ADC Buffer for later usage*/
 uint32_t adcChannelCount = sizeof (adcResultDMA) / sizeof (adcResultDMA[0]);
 
 uint8_t adcConversationComplete = NO;			   	/*Complete flag set by callback*/
-uint8_t adcFirstUse = YES;
+
 
 
 /*Private functions ---------------------------------------------------------------*/
@@ -28,20 +28,6 @@ ADC_status_t ADC1_DMA1_Read(ADC_HandleTypeDef *hadc)
 	{
 		return ADC_NOK;
 	}
-
-	if (adcFirstUse == YES)
-	{
-		adcFirstUse = NO;
-		HAL_ADC_Start_DMA(hadc, (uint32_t *)&adcResultDMA[0], adcChannelCount);
-		HAL_Delay(5);
-	}
-
-
-	if(adcConversationComplete >= NO)
-	{
-		return ADC_NOK;
-	}
-
 
 	for (int i = 0; i < READED_ADC_CHANNEL; i++)
 		{
@@ -57,10 +43,19 @@ ADC_status_t ADC1_DMA1_Read(ADC_HandleTypeDef *hadc)
 /*-------------------ADC complete callback----------------------------------------*/
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+
 	adcConversationComplete = YES;
 
 }
+
+/*------------------ADC Conversation Complete check-------------------------------*/
+
+ADC_complete_t ADC_ConvCpltCheck(ADC_HandleTypeDef *hadc)
+{
+	return adcConversationComplete;
+}
+
+
 
 
 /*-------------------VREFINT request funktion-------------------------------------*/

@@ -11,14 +11,14 @@
 
 /* Private variables -------------------------------------------------------------*/
 
-uint8_t BufferCounter = 0;
-uint16_t CH1_Buffer[TempBufferSize] = {0};
-uint16_t CH2_Buffer[TempBufferSize] = {0};
-uint16_t CH3_Buffer[TempBufferSize] = {0};
-uint16_t CH4_Buffer[TempBufferSize] = {0};
-uint16_t CH5_Buffer[TempBufferSize] = {0};
-uint16_t CH6_Buffer[TempBufferSize] = {0};
+
+//uint16_t CH1_Buffer[TempBufferSize] = {0};
+//uint16_t CH2_Buffer[TempBufferSize] = {0};
+//uint16_t CH3_Buffer[TempBufferSize] = {0};
+//uint16_t CH4_Buffer[TempBufferSize] = {0};
+
 uint16_t NTC_Max_Buffer[TempBufferSize] = {0};
+uint8_t NTCMaxBufferCounter = 0;
 
 uint32_t vrefint_Temp;
 
@@ -32,55 +32,41 @@ uint32_t vrefint_Temp;
 /* +100°C --> 4261mV				*/
 /* +115°C --> 4460mV				*/
 
-void NTC_Value_Read(void)
-		{
-			/*Refresh the vrefint at first*/
-			vrefint_Temp = __LL_ADC_CALC_VREFANALOG_VOLTAGE(ADC_Value_VREFINT(),LL_ADC_RESOLUTION_12B);
-
-
-			/*CH1*/
-			for (int i = 0; i < (TempBufferSize-1); i++)
-			{
-				CH1_Buffer[i] = CH1_Buffer[i+1];
-			}
-			CH1_Buffer[TempBufferSize-1] = __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_Temp,ADC_Value_NTC_CH1(),LL_ADC_RESOLUTION_12B);
-
-			/*CH2*/
-			for (int i = 0; i < (TempBufferSize-1); i++)
-			{
-				CH2_Buffer[i] = CH2_Buffer[i+1];
-			}
-			CH2_Buffer[TempBufferSize-1] =  __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_Temp,ADC_Value_NTC_CH2(),LL_ADC_RESOLUTION_12B);
-
-			/*CH3*/
-			for (int i = 0; i < (TempBufferSize-1); i++)
-			{
-				CH3_Buffer[i] = CH3_Buffer[i+1];
-			}
-			CH3_Buffer[TempBufferSize-1] =  __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_Temp,ADC_Value_NTC_CH3(),LL_ADC_RESOLUTION_12B);
-
-			/*CH4*/
-			for (int i = 0; i < (TempBufferSize-1); i++)
-			{
-				CH4_Buffer[i] = CH4_Buffer[i+1];
-			}
-			CH4_Buffer[TempBufferSize-1] =  __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_Temp,ADC_Value_NTC_CH4(),LL_ADC_RESOLUTION_12B);
-
-			/*CH5*/
-			for (int i = 0; i < (TempBufferSize-1); i++)
-			{
-			CH5_Buffer[i] = CH5_Buffer[i+1];
-			}
-			CH5_Buffer[TempBufferSize-1] =  __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_Temp,ADC_Value_NTC_CH5(),LL_ADC_RESOLUTION_12B);
-
-			/*CH6*/
-			for (int i = 0; i < (TempBufferSize-1); i++)
-			{
-			CH6_Buffer[i] = CH6_Buffer[i+1];
-			}
-			CH6_Buffer[TempBufferSize-1] =  __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_Temp,ADC_Value_NTC_CH6(),LL_ADC_RESOLUTION_12B);
-
-		}
+//void NTC_Value_Read(void)
+//		{
+//			/*Refresh the vrefint at first*/
+//			vrefint_Temp = __LL_ADC_CALC_VREFANALOG_VOLTAGE(ADC_Value_VREFINT(),LL_ADC_RESOLUTION_12B);
+//
+//
+//			/*CH1*/
+//			for (int i = 0; i < (TempBufferSize-1); i++)
+//			{
+//				CH1_Buffer[i] = CH1_Buffer[i+1];
+//			}
+//			CH1_Buffer[TempBufferSize-1] = __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_Temp,ADC_Value_NTC_CH1(),LL_ADC_RESOLUTION_12B);
+//
+//			/*CH2*/
+//			for (int i = 0; i < (TempBufferSize-1); i++)
+//			{
+//				CH2_Buffer[i] = CH2_Buffer[i+1];
+//			}
+//			CH2_Buffer[TempBufferSize-1] =  __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_Temp,ADC_Value_NTC_CH2(),LL_ADC_RESOLUTION_12B);
+//
+//			/*CH3*/
+//			for (int i = 0; i < (TempBufferSize-1); i++)
+//			{
+//				CH3_Buffer[i] = CH3_Buffer[i+1];
+//			}
+//			CH3_Buffer[TempBufferSize-1] =  __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_Temp,ADC_Value_NTC_CH3(),LL_ADC_RESOLUTION_12B);
+//
+//			/*CH4*/
+//			for (int i = 0; i < (TempBufferSize-1); i++)
+//			{
+//				CH4_Buffer[i] = CH4_Buffer[i+1];
+//			}
+//			CH4_Buffer[TempBufferSize-1] =  __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_Temp,ADC_Value_NTC_CH4(),LL_ADC_RESOLUTION_12B);
+//
+//		}
 
 void NTC_Max_Read(void)
 {
@@ -88,9 +74,13 @@ void NTC_Max_Read(void)
 	vrefint_Temp = __LL_ADC_CALC_VREFANALOG_VOLTAGE(ADC_Value_VREFINT(),LL_ADC_RESOLUTION_12B);
 
 	/*read the max value and convert to voltage*/
-	for (int i = 0; i < (TempBufferSize-1); i++)
-		{
-		NTC_Max_Buffer[i] = NTC_Max_Buffer[i+1];
-		}
-	NTC_Max_Buffer[TempBufferSize-1] =  __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_Temp,ADC_Value_NTC_MAX(),LL_ADC_RESOLUTION_12B);
+
+	NTC_Max_Buffer[NTCMaxBufferCounter] =  __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_Temp,ADC_Value_NTC_MAX(),LL_ADC_RESOLUTION_12B);
+	NTCMaxBufferCounter++;
+	if (NTCMaxBufferCounter == (TempBufferSize))
+	{
+		NTCMaxBufferCounter = 0;
+	}
+
+
 }

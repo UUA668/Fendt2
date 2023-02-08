@@ -113,6 +113,14 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_ADCEx_Calibration_Start(&hadc1);
   ADC_Enable(&hadc1);
+  ADC1_DMA1_Read(&hadc1);						/*first ADC read fill the buffer*/
+
+  do
+    {
+  	  HAL_Delay(10);
+    }while (ADC_ConvCpltCheck(&hadc1) == NO);
+
+
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -423,7 +431,7 @@ void Start_Hundred_ms(void const * argument)
   {
 	  /*---------------------------Call function-----------------------------*/
 
-	  NTC_Value_Read();
+
 	  NTC_Max_Read();
 
 
