@@ -22,6 +22,15 @@ uint8_t NTCMaxBufferCounter = 0;
 
 uint32_t vrefint_Temp;
 
+/*-----------------------------Validity check limits-------------------------------*/
+/*The NTC Voltage cannot be below 100mV. 										   */
+/*It would mean that the Temperature is below -40°C--> ASS COLD			          */
+/*The NTC Voltage cannot be above 4700mV.                                         */
+/*It would mean that the Temperature is above 125°C--> TOO HOT                    */
+
+s_Limits_t NTC_Limits = {100, 4700};
+
+
 /* Read the NTC values and fill the buffer----------------------------------------*/
 /*Function void NTC_Value_Read(void) read the values separately					  */
 /*Function void NTC_Max_Read(void) read the max Value only   					  */

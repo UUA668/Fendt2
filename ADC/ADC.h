@@ -33,6 +33,13 @@ typedef enum {
 	ADC_NOK,
 } ADC_status_t;
 
+
+typedef struct
+{
+	uint16_t	LowerLimit;							/*limit for ValidityCheck*/
+	uint16_t	UpperLimit;							/*limit for ValidityCheck*/
+}s_Limits_t;
+
 /*ADC complete flag*/
 typedef enum {
 	YES = 0,
@@ -54,6 +61,6 @@ extern uint16_t ADC_Value_NTC_MAX(void);
 
 extern void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc);
 extern ADC_complete_t ADC_ConvCpltCheck(ADC_HandleTypeDef *hadc);
-
+extern void ValidityCheck(uint16_t Voltage, s_Limits_t Limits);
 
 #endif /* ADC_H_ */

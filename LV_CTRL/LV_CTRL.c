@@ -19,6 +19,14 @@ uint32_t vrefint_LV;
 uint8_t FB1BufferCounter = 0;
 uint8_t FB2BufferCounter = 0;
 
+/*-----------------------------Validity check limits-------------------------------*/
+/*The LV Voltage cannot be below 534mV. It would mean 							   */
+/*that the LED chain voltage is below 20V--> Boost topology does not function      */
+/*The LV Voltage cannot be above 1200mV.                                           */
+/*It would mean that the LED chain voltage is above 45V--> LED Driver switches off */
+
+s_Limits_t LV_Limits = {534, 1200};
+
 
 /*Private functions --------------------------------------------------------------*/
 

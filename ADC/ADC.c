@@ -130,3 +130,14 @@ uint16_t ADC_Value_NTC_MAX(void)
 
 	return Max_NTC_Value;
 }
+
+
+/*-----------------------universal validity check function----------------------*/
+void ValidityCheck(uint16_t Voltage, s_Limits_t Limits)
+{
+	if ((Voltage < Limits.LowerLimit) || (Voltage > Limits.UpperLimit))
+			{
+			HAL_Delay(1);/*call error handler*/
+			}
+	return;
+}

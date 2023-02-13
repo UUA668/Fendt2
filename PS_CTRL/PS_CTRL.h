@@ -11,9 +11,7 @@
 /* Private includes ----------------------------------------------------------*/
 #include "stm32g0xx_hal.h"
 
-/* Private macros-------------------------------------------------------------*/
 
-#define UVLOBufferSize 5
 
 /* Private function prototypes -----------------------------------------------*/
 
