@@ -7,6 +7,7 @@
 
 /* Private includes --------------------------------------------------------------*/
 #include "Temp_CTRL.h"
+#include "Temp_CTRL_CFG.h"
 #include "ADC.h"
 
 /* Private variables -------------------------------------------------------------*/
@@ -18,17 +19,15 @@
 //uint16_t CH4_Buffer[TempBufferSize] = {0};
 
 uint16_t NTC_Max_Buffer[TempBufferSize] = {0};
+Validity_status_t NTC_Max_Valid_Buffer [TempBufferSize] = {NOT_VALID};
 uint8_t NTCMaxBufferCounter = 0;
 
 uint32_t vrefint_Temp;
 
-/*-----------------------------Validity check limits-------------------------------*/
-/*The NTC Voltage cannot be below 100mV. 										   */
-/*It would mean that the Temperature is below -40°C--> ASS COLD			          */
-/*The NTC Voltage cannot be above 4700mV.                                         */
-/*It would mean that the Temperature is above 125°C--> TOO HOT                    */
 
-s_Limits_t NTC_Limits = {100, 4700};
+/* Private prototypes --------------------------------------------------------------*/
+Validity_status_t TempValidityCheck(uint16_t Voltage);
+
 
 
 /* Read the NTC values and fill the buffer----------------------------------------*/
@@ -85,11 +84,23 @@ void NTC_Max_Read(void)
 	/*read the max value and convert to voltage*/
 
 	NTC_Max_Buffer[NTCMaxBufferCounter] =  __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_Temp,ADC_Value_NTC_MAX(),LL_ADC_RESOLUTION_12B);
+	NTC_Max_Valid_Buffer [NTCMaxBufferCounter]= TempValidityCheck(NTC_Max_Buffer[NTCMaxBufferCounter]);
 	NTCMaxBufferCounter++;
 	if (NTCMaxBufferCounter == (TempBufferSize))
 	{
 		NTCMaxBufferCounter = 0;
 	}
-
-
 }
+
+
+
+/*-------------------------------validity check function---------------------------*/
+Validity_status_t TempValidityCheck(uint16_t Voltage)
+{
+	if ((Voltage < TEMPLOWERLIMIT) || (Voltage > TEMPUPPERLIMIT))
+			{
+			return NOT_VALID;
+			}
+	return VALID;
+}
+
