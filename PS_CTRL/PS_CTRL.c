@@ -13,9 +13,10 @@
 
 /* Private variables -------------------------------------------------------------*/
 
-uint16_t UVLO_Buffer[UVLOBUFFERSIZE] = {0};
-uint8_t UVLOBufferCounter = 0;
-Validity_status_t UVLO_Valid_Buffer[UVLOBUFFERSIZE] = {NOT_VALID};
+uint16_t UVLO_Buffer[UVLO_BUFFERSIZE] = {BUFFER_START_VALUE};
+uint8_t UVLOBufferCounter = BUFFER_START_VALUE;
+Validity_status_t UVLO_Valid_Buffer[UVLO_BUFFERSIZE] = {VALID};
+
 
 uint32_t vrefint_PS;
 
@@ -34,7 +35,7 @@ void UVLO_Read(void)
 	UVLO_Buffer[UVLOBufferCounter] =  __LL_ADC_CALC_DATA_TO_VOLTAGE(vrefint_PS,ADC_Value_UVLO(),LL_ADC_RESOLUTION_12B);
 	UVLO_Valid_Buffer[UVLOBufferCounter] = UVLOValidityCheck(UVLO_Buffer[UVLOBufferCounter]);
 	UVLOBufferCounter++;
-	if (UVLOBufferCounter == (UVLOBUFFERSIZE))
+	if (UVLOBufferCounter == (UVLO_BUFFERSIZE))
 	{
 		UVLOBufferCounter = 0;
 	}
@@ -44,11 +45,46 @@ void UVLO_Read(void)
 /*-------------------------------validity check function---------------------------*/
 Validity_status_t UVLOValidityCheck(uint16_t Voltage)
 {
-	if ((Voltage < UVLOLOWERLIMIT) || (Voltage > UVLOUPPERLIMIT))
+	if ((Voltage < UVLO_LOWERLIMIT) || (Voltage > UVLO_UPPERLIMIT))
 			{
 			return NOT_VALID;
 			}
 	return VALID;
 }
 
+/*------------------------------Calculate debounced UVLO valued--------------------*/
+uint16_t Get_Debounced_UVLO()
+{
+	uint8_t ValidityCounter = 0;
+	uint16_t Debounced_UVLO = 0;
 
+	/*Check the validity statuses in the buffer and if there is more invalid as    */
+	/*allowed (ALLOWED_INVALID_UVLO), call the error handler*/
+	for(int i = 0; i < UVLO_BUFFERSIZE; i++)
+		{
+		ValidityCounter += UVLO_Valid_Buffer[i];
+		}
+
+	if (ValidityCounter > ALLOWED_INVALID_UVLO)
+		{
+
+		HAL_Delay(1);/*call error handler instead of HAL_Delay*/
+		}
+
+	/*calculate the debounced UVLO value */
+
+	for(int j = 0; j < UVLO_BUFFERSIZE; j++)
+		{
+		if((UVLO_Valid_Buffer[j] == VALID) && (UVLO_Buffer[j] |= BUFFER_START_VALUE))
+			{
+			Debounced_UVLO += UVLO_Buffer[j];
+			}
+		if((UVLO_Valid_Buffer[j] == VALID) && (UVLO_Buffer[j] == BUFFER_START_VALUE))
+			{
+			ValidityCounter += 1;
+			}
+		}
+
+	Debounced_UVLO /= ValidityCounter;
+	return Debounced_UVLO;
+}

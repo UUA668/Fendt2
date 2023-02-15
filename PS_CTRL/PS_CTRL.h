@@ -13,11 +13,12 @@
 
 /* Private defines------------------------------------------------------------*/
 
+#define BUFFER_START_VALUE 0
 
 /* Private function prototypes -----------------------------------------------*/
 
 extern void UVLO_Read(void);
-
+extern uint16_t Get_Debounced_UVLO();
 
 
 #endif /* PS_CTRL_H_ */

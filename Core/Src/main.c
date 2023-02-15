@@ -464,7 +464,7 @@ void Start_Ten_ms(void const * argument)
 	  UVLO_Read();
 	  FB1_Read();
 	  FB2_Read();
-
+	  Get_Debounced_UVLO();
 
 	/*------------------------Wait till the end of 10ms-----------------------*/
 

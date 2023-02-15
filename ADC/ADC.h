@@ -41,8 +41,8 @@ typedef enum {
 
 /*Validitiy status def*/
 typedef enum {
-	NOT_VALID = 0,
-	VALID,
+	VALID = 0,
+	NOT_VALID,
 } Validity_status_t;
 
 /* Private function prototypes -----------------------------------------------*/
