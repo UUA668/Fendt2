@@ -14,10 +14,14 @@
 
 /* Private defines------------------------------------------------------------*/
 
+#define FB_START_VALUE 0
+
 /* Private function prototypes -----------------------------------------------*/
 
 extern void FB1_Read(void);
 extern void FB2_Read(void);
+extern uint16_t Get_Debounced_FB1();
+extern uint16_t Get_Debounced_FB2();
 
 
 #endif /* LV_CTRL_H_ */

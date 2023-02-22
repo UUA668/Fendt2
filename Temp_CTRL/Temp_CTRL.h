@@ -12,13 +12,15 @@
 #include "stm32g0xx_hal.h"
 
 
-/* Private macros-------------------------------------------------------------*/
+/* Private defines-------------------------------------------------------------*/
 
-#define TempBufferSize 5
+#define NTC_START_VALUE 0
+
 
 /* Private function prototypes -----------------------------------------------*/
 
 extern void NTC_Value_Read(void);
 extern void NTC_Max_Read(void);
+extern uint16_t Get_Debounced_NTC_Max();
 
 #endif /* TEMP_CTRL_H_ */

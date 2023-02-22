@@ -13,8 +13,8 @@
 
 /* Private variables -------------------------------------------------------------*/
 
-uint16_t UVLO_Buffer[UVLO_BUFFERSIZE] = {BUFFER_START_VALUE};
-uint8_t UVLOBufferCounter = BUFFER_START_VALUE;
+uint16_t UVLO_Buffer[UVLO_BUFFERSIZE] = {UVLO_START_VALUE};
+uint8_t UVLOBufferCounter = UVLO_START_VALUE;
 Validity_status_t UVLO_Valid_Buffer[UVLO_BUFFERSIZE] = {VALID};
 
 
@@ -52,7 +52,7 @@ Validity_status_t UVLOValidityCheck(uint16_t Voltage)
 	return VALID;
 }
 
-/*------------------------------Calculate debounced UVLO valued--------------------*/
+/*------------------------------Calculate debounced UVLO value---------------------*/
 uint16_t Get_Debounced_UVLO()
 {
 	uint8_t ValidityCounter = 0;
@@ -72,17 +72,15 @@ uint16_t Get_Debounced_UVLO()
 		}
 
 	/*calculate the debounced UVLO value */
-
+	ValidityCounter = 0; 											/*reset counter*/
 	for(int j = 0; j < UVLO_BUFFERSIZE; j++)
 		{
-		if((UVLO_Valid_Buffer[j] == VALID) && (UVLO_Buffer[j] |= BUFFER_START_VALUE))
+		if((UVLO_Valid_Buffer[j] == VALID) && (UVLO_Buffer[j] |= UVLO_START_VALUE))
 			{
 			Debounced_UVLO += UVLO_Buffer[j];
-			}
-		if((UVLO_Valid_Buffer[j] == VALID) && (UVLO_Buffer[j] == BUFFER_START_VALUE))
-			{
 			ValidityCounter += 1;
 			}
+
 		}
 
 	Debounced_UVLO /= ValidityCounter;

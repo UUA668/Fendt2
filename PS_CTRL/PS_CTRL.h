@@ -13,7 +13,7 @@
 
 /* Private defines------------------------------------------------------------*/
 
-#define BUFFER_START_VALUE 0
+#define UVLO_START_VALUE 0
 
 /* Private function prototypes -----------------------------------------------*/
 

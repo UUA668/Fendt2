@@ -58,7 +58,11 @@ osStaticThreadDef_t Ten_ms_ControlBlock;
 /* USER CODE BEGIN PV */
 
 
-uint32_t Test_Register;
+uint16_t Test_Register_UVLO;
+uint16_t Test_Register_FB1;
+uint16_t Test_Register_FB2;
+uint16_t Test_Register_NTC;
+uint16_t Test_Register_NTC_Max;
 
 /* USER CODE END PV */
 
@@ -434,7 +438,7 @@ void Start_Hundred_ms(void const * argument)
 
 
 	  NTC_Max_Read();
-
+	  Test_Register_NTC_Max = Get_Debounced_NTC_Max();
 
 	  /*----------------------Wait till the end of 100ms---------------------*/
 	 vTaskDelayUntil(&pxPreviousWakeTime, 100);
@@ -461,10 +465,14 @@ void Start_Ten_ms(void const * argument)
 
 	  ADC1_DMA1_Read(&hadc1);
 
+	/*------------------------call functions for test-------------------------*/
 	  UVLO_Read();
 	  FB1_Read();
 	  FB2_Read();
-	  Get_Debounced_UVLO();
+	  Test_Register_UVLO = Get_Debounced_UVLO();
+	  Test_Register_FB1 = Get_Debounced_FB1();
+	  Test_Register_FB2 = Get_Debounced_FB2();
+
 
 	/*------------------------Wait till the end of 10ms-----------------------*/
 
