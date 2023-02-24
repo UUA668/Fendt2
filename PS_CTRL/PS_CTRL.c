@@ -20,7 +20,7 @@ Validity_status_t UVLO_Valid_Buffer[UVLO_BUFFERSIZE] = {VALID};
 
 uint32_t vrefint_PS;
 
-/* Private prototypes --------------------------------------------------------------*/
+/* Private prototypes ------------------------------------------------------------*/
 Validity_status_t UVLOValidityCheck(uint16_t Voltage);
 
 /*Private functions --------------------------------------------------------------*/
