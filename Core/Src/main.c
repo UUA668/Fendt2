@@ -27,6 +27,7 @@
 #include "PS_CTRL.h"
 #include "LV_CTRL.h"
 #include "SPI.h"
+#include "LED_DRV.h"
 
 /* USER CODE END Includes */
 
@@ -125,13 +126,12 @@ int main(void)
   ADC_Enable(&hadc1);
   ADC1_DMA1_Read(&hadc1);						/*first ADC read fill the buffer*/
 
-
-
   do
     {
   	  HAL_Delay(10);
     }while (ADC_ConvCpltCheck(&hadc1) == NO);
 
+  LED_DRV_Init(&hspi1);
 
   /* USER CODE END 2 */
 
@@ -361,17 +361,17 @@ static void MX_SPI1_Init(void)
   hspi1.Instance = SPI1;
   hspi1.Init.Mode = SPI_MODE_MASTER;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi1.Init.DataSize = SPI_DATASIZE_16BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.NSS = SPI_NSS_HARD_OUTPUT;
   hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
   hspi1.Init.CRCPolynomial = 7;
   hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-  hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
   if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     Error_Handler();
@@ -463,14 +463,14 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(SPI1_SSN1_GPIO_Port, SPI1_SSN1_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(SPI1_SSN2_GPIO_Port, SPI1_SSN2_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : SPI1_SSN1_Pin */
-  GPIO_InitStruct.Pin = SPI1_SSN1_Pin;
+  /*Configure GPIO pin : SPI1_SSN2_Pin */
+  GPIO_InitStruct.Pin = SPI1_SSN2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(SPI1_SSN1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(SPI1_SSN2_GPIO_Port, &GPIO_InitStruct);
 
 }
 
@@ -536,7 +536,7 @@ void Start_Ten_ms(void const * argument)
 	  FB2_Read();											/*FB2 test for programming*/
 	  Test_Register_FB2 = Get_Debounced_FB2();
 
-	  SPI_Init(&hspi1); 									/*SPI test for programming*/
+
 
 	/*------------------------Wait till the end of 10ms-----------------------*/
 
