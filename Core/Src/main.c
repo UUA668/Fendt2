@@ -68,6 +68,7 @@ uint16_t Test_Register_FB2;
 uint16_t Test_Register_NTC;
 uint16_t Test_Register_NTC_Max;
 
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -132,6 +133,8 @@ int main(void)
     }while (ADC_ConvCpltCheck(&hadc1) == NO);
 
   LED_DRV_Init(&hspi1);
+  HAL_Delay(1000);								/*only for test before the  defined LED current is coming */
+  Set_Current(&hspi1, DEFINED_LED_CURRENT);
 
   /* USER CODE END 2 */
 
@@ -499,6 +502,7 @@ void Start_Hundred_ms(void const * argument)
 	  NTC_Max_Read();									/*NTC test for programming*/
 	  Test_Register_NTC_Max = Get_Debounced_NTC_Max();
 
+	  Set_PWM(&hspi1, MAX_PWM);
 
 
 	  /*----------------------Wait till the end of 100ms---------------------*/
@@ -536,7 +540,7 @@ void Start_Ten_ms(void const * argument)
 	  FB2_Read();											/*FB2 test for programming*/
 	  Test_Register_FB2 = Get_Debounced_FB2();
 
-
+	  Set_PWM(&hspi1, HALF_PWM);
 
 	/*------------------------Wait till the end of 10ms-----------------------*/
 
