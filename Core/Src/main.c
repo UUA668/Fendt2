@@ -28,6 +28,8 @@
 #include "LV_CTRL.h"
 #include "SPI.h"
 #include "LED_DRV.h"
+#include "SBC.h"
+#include "Light_CTRL.h"
 
 /* USER CODE END Includes */
 
@@ -62,11 +64,9 @@ osStaticThreadDef_t Ten_ms_ControlBlock;
 /* USER CODE BEGIN PV */
 
 
-uint16_t Test_Register_UVLO;
-uint16_t Test_Register_FB1;
-uint16_t Test_Register_FB2;
-uint16_t Test_Register_NTC;
-uint16_t Test_Register_NTC_Max;
+
+uint16_t NTC;
+uint16_t NTC_Max;
 
 
 /* USER CODE END PV */
@@ -132,9 +132,14 @@ int main(void)
   	  HAL_Delay(10);
     }while (ADC_ConvCpltCheck(&hadc1) == NO);
 
+
   LED_DRV_Init(&hspi1);
-  HAL_Delay(1000);								/*only for test before the  defined LED current is coming */
-  Set_Current(&hspi1, DEFINED_LED_CURRENT);
+
+
+  SBC_Init(&hspi1);
+  //CurrentStartup(&hspi1);
+
+
 
   /* USER CODE END 2 */
 
@@ -367,8 +372,8 @@ static void MX_SPI1_Init(void)
   hspi1.Init.DataSize = SPI_DATASIZE_16BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi1.Init.NSS = SPI_NSS_HARD_OUTPUT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -466,7 +471,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(SPI1_SSN2_GPIO_Port, SPI1_SSN2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SPI1_SSN2_GPIO_Port, SPI1_SSN2_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(SPI1_SSN1_GPIO_Port, SPI1_SSN1_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin : SPI1_SSN2_Pin */
   GPIO_InitStruct.Pin = SPI1_SSN2_Pin;
@@ -474,6 +482,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(SPI1_SSN2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : SPI1_SSN1_Pin */
+  GPIO_InitStruct.Pin = SPI1_SSN1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(SPI1_SSN1_GPIO_Port, &GPIO_InitStruct);
 
 }
 
@@ -499,10 +514,10 @@ void Start_Hundred_ms(void const * argument)
 	  /*---------------------------Call function-----------------------------*/
 
 
-	  NTC_Max_Read();									/*NTC test for programming*/
-	  Test_Register_NTC_Max = Get_Debounced_NTC_Max();
+	  NTC_Max_Read();
+	  NTC_Max = Get_Debounced_NTC_Max();
 
-	  Set_PWM(&hspi1, MAX_PWM);
+
 
 
 	  /*----------------------Wait till the end of 100ms---------------------*/
@@ -531,16 +546,16 @@ void Start_Ten_ms(void const * argument)
 	  ADC1_DMA1_Read(&hadc1);
 
 	/*------------------------call functions for test-------------------------*/
-	  UVLO_Read();											/*UVLO test for programming*/
-	  Test_Register_UVLO = Get_Debounced_UVLO();
 
-	  FB1_Read();											/*FB1 test for programming*/
-	  Test_Register_FB1 = Get_Debounced_FB1();
+	  UVLO_Read();
+	  Calc_Current_V(&hspi1, Get_Debounced_UVLO());
 
-	  FB2_Read();											/*FB2 test for programming*/
-	  Test_Register_FB2 = Get_Debounced_FB2();
+	  FB1_Read();
+	  FB2_Read();
+	  //Output_Voltage(&hspi1, Get_Debounced_FB1(), Get_Debounced_FB2());
 
-	  Set_PWM(&hspi1, HALF_PWM);
+
+
 
 	/*------------------------Wait till the end of 10ms-----------------------*/
 

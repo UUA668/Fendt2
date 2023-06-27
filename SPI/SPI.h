@@ -31,7 +31,8 @@ typedef enum {
 
 /* Private function prototypes -----------------------------------------------*/
 
-extern uint16_t SPI_TXRX(SPI_HandleTypeDef *hspi, uint16_t CommandFrame, uint8_t Data);
+extern uint16_t LED_DRV_TXRX(SPI_HandleTypeDef *hspi, uint16_t CommandFrame, uint8_t Data);
+extern uint16_t SBC_TXRX(SPI_HandleTypeDef *hspi, uint16_t CommandFrame, uint8_t Data);
 extern uint16_t GetOddParity(uint16_t input);
 
 

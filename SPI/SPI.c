@@ -13,7 +13,6 @@
 /* Private variables -------------------------------------------------------------*/
 
 
-
 /*Command frame for TSP92682 consists of a CMD bit,
 six bits of ADDRESS, a PARITY bit (odd parity), and eight bits of DATA. The format of the Command frame is
 shown in Figure 45. The bit sequence is as follows:
@@ -29,7 +28,8 @@ command.
 
 /*Private functions --------------------------------------------------------------*/
 
-uint16_t SPI_TXRX(SPI_HandleTypeDef *hspi, uint16_t CommandFrame, uint8_t Data)
+/*SPI communication for LED Driver*/
+uint16_t LED_DRV_TXRX(SPI_HandleTypeDef *hspi, uint16_t CommandFrame, uint8_t Data)
 {
 	uint16_t 	*ptr_CommandFrame = &CommandFrame;
 	uint16_t 	ResponseFrame = 0;
@@ -43,14 +43,23 @@ uint16_t SPI_TXRX(SPI_HandleTypeDef *hspi, uint16_t CommandFrame, uint8_t Data)
 		HAL_Delay(1);/*instead of delay call error handler*/
 	}
 
+	/*LED driver needs CLK rising edge capture */
+	hspi->Init.CLKPhase = SPI_PHASE_1EDGE;
+	HAL_SPI_Init(hspi);
+
+
 	/*add Data to CommandFrame*/
 	CommandFrame += Data;
 	/*complete the CommandFrame with Parity bit*/
 	CommandFrame = GetOddParity(CommandFrame);
 
 	/*TX...RX*/
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
 	HAL_SPI_Transmit(hspi, ptr_CommandFrame, 1, 100);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
 	HAL_SPI_Receive(hspi, ptr_ResponseFrame, 1, 100);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
 
 	/*check SPI error*/
 	if((ResponseFrame & BITMASK_SPI_ERROR) == SPI_ERROR)
@@ -61,6 +70,44 @@ uint16_t SPI_TXRX(SPI_HandleTypeDef *hspi, uint16_t CommandFrame, uint8_t Data)
 	return ResponseFrame;
 }
 
+/*SPI communication for SBC*/
+uint16_t SBC_TXRX(SPI_HandleTypeDef *hspi, uint16_t CommandFrame, uint8_t Data)
+{
+	uint16_t 	*ptr_CommandFrame = &CommandFrame;
+	uint16_t 	ResponseFrame = 0;
+	uint16_t 	*ptr_ResponseFrame = &ResponseFrame;
+
+	/*check the incoming parameters*/
+		if(NULL == hspi)
+		{
+			HAL_Delay(1);/*instead of delay call error handler*/
+		}
+
+	/*SBC needs CLK falling edge capture */
+	hspi->Init.CLKPhase = SPI_PHASE_2EDGE;
+	HAL_SPI_Init(hspi);
+
+
+
+	/*add Data to CommandFrame*/
+	CommandFrame += Data;
+
+
+	/*TX...RX*/
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+	HAL_SPI_Transmit(hspi, ptr_CommandFrame, 1, 100);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+	HAL_SPI_Receive(hspi, ptr_ResponseFrame, 1, 100);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_SET);
+
+	/*check SPI error*/
+	if((ResponseFrame & BITMASK_SPI_ERROR) == SPI_ERROR)
+	{
+		HAL_Delay(1);/*instead of delay call error handler*/
+	}
+	return ResponseFrame;
+}
 
 /*Calculate Odd Parity from input, and add to input on the right place*/
 uint16_t GetOddParity(uint16_t input)

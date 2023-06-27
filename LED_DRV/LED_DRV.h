@@ -20,6 +20,12 @@ typedef enum {
 	LED_DRV_NOK,
 } LED_DRV_status_t;
 
+/*LED Driver ENABLE Status def*/
+typedef enum {
+	DISABLED = 0,
+	ENABLED,
+} EN_status_t;
+
 /*SPI standard read commands, it contains the odd parity bit too*/
 #define 	READ_EN					0x0000	//0b0 000000 0 00000000
 #define		READ_CFG1				0x0200	//0b0 000001 0 00000000
@@ -28,6 +34,7 @@ typedef enum {
 #define 	READ_FLT2				0x2400	//0b0 010010 0 00000000
 #define 	READ_CH1IADJ			0x0E00	//0b0 000111 0 00000000
 #define 	READ_CH2IADJ			0x1000	//0b0 001000 0 00000000
+#define		READ_PWMDIV				0x1200	//0b0 001001 0 00000000
 #define 	READ_CH1PWML			0x1400	//0b0 001010 0 00000000
 #define 	READ_CH1PWMH			0x1600	//0b0 001011 0 00000000
 #define 	READ_CH2PWML			0x1800	//0b0 001100 0 00000000
@@ -44,6 +51,7 @@ typedef enum {
 #define		WRITE_CFG2				0x8400	//0b1 000010 0 00000000
 #define 	WRITE_CH1IADJ			0x8E00	//0b1 000111 0 00000000
 #define 	WRITE_CH2IADJ			0x9000	//0b1 001000 0 00000000
+#define		WRITE_PWMDIV			0x9200	//0b1 001001 0 00000000
 #define 	WRITE_CH1PWML			0x9400	//0b1 001010 0 00000000
 #define 	WRITE_CH1PWMH			0x9600	//0b1 001011 0 00000000
 #define 	WRITE_CH2PWML			0x9800	//0b1 001100 0 00000000
@@ -75,11 +83,16 @@ typedef enum {
 #define 	NO_FLT					0x6000									/*By read FLTx registers the response on SPI should be 0b1100 0000 0000 0000 = no fault*/
 
 
+
+
 /* Private function prototypes -----------------------------------------------*/
 
 extern LED_DRV_status_t LED_DRV_Init(SPI_HandleTypeDef *hspi);
 extern LED_DRV_status_t Set_Current(SPI_HandleTypeDef *hspi, uint8_t SetCurrent);
 extern LED_DRV_status_t Set_PWM(SPI_HandleTypeDef *hspi, uint16_t SetPWM);
 extern LED_DRV_status_t Read_FLTx(SPI_HandleTypeDef *hspi);
+extern LED_DRV_status_t Switch_OFF(SPI_HandleTypeDef *hspi);
+extern LED_DRV_status_t Switch_ON(SPI_HandleTypeDef *hspi);
+extern EN_status_t Get_ENStatusFLAG(void);
 
 #endif /* LED_DRV_H_ */

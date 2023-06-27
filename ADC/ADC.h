@@ -13,7 +13,7 @@
 #include "stm32g0xx_hal.h"
 
 /* Private macro -------------------------------------------------------------*/
-#define READED_ADC_CHANNEL 8			  /*how many channel are read wint ADC*/
+#define READED_ADC_CHANNEL 8			  /*how many channel are read with ADC*/
 
 #define VREFINT adcBuffer[0]
 #define UVLO adcBuffer[1]

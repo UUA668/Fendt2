@@ -214,11 +214,10 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
     __HAL_RCC_GPIOA_CLK_ENABLE();
     /**SPI1 GPIO Configuration
     PD8     ------> SPI1_SCK
-    PD9     ------> SPI1_NSS
     PA11 [PA9]     ------> SPI1_MISO
     PA12 [PA10]     ------> SPI1_MOSI
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_8|SPI1_SSN1_Pin;
+    GPIO_InitStruct.Pin = GPIO_PIN_8;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -227,7 +226,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 
     GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF0_SPI1;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -257,11 +256,10 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
 
     /**SPI1 GPIO Configuration
     PD8     ------> SPI1_SCK
-    PD9     ------> SPI1_NSS
     PA11 [PA9]     ------> SPI1_MISO
     PA12 [PA10]     ------> SPI1_MOSI
     */
-    HAL_GPIO_DeInit(GPIOD, GPIO_PIN_8|SPI1_SSN1_Pin);
+    HAL_GPIO_DeInit(GPIOD, GPIO_PIN_8);
 
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11|GPIO_PIN_12);
 
